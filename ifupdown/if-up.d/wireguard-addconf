@@ -5,13 +5,8 @@ function runcmd {
     "$@"
 }
 
-# Apply any matching wireguard configs found.
-if [[ "$IFACE" == wg* ]]; then
-    if [[ -d /etc/wireguard/"$IFACE" ]]; then
-        config_path=/etc/wireguard/"$IFACE"/config
-    else
-        config_path=/etc/wireguard/"$IFACE".conf
-    fi
+function loadconf {
+    local config_path="$1"
 
     # Refuse to load the config if it is writable by others.
     config_mode=$(stat --format %A "$config_path")
@@ -29,4 +24,22 @@ if [[ "$IFACE" == wg* ]]; then
     fi
 
     runcmd wg addconf "$IFACE" "$config_path"
+}
+
+# Apply any matching wireguard configs found, in order:
+#     * Interface-specific config in interface-specific folder
+#     * Interface-specific config in default wireguard folder
+#     * Custom interface option 'wg-config-file'
+if [[ "$IFACE" == wg* ]]; then
+    if [[ -f /etc/wireguard/"$IFACE"/config ]]; then
+        loadconf /etc/wireguard/"$IFACE"/config
+    fi
+
+    if [[ -f /etc/wireguard/"$IFACE".conf ]]; then
+        loadconf /etc/wireguard/"$IFACE".conf
+    fi
+
+    if [[ -f "$IF_WG_CONFIG_FILE" ]]; then
+        loadconf "$IF_WG_CONFIG_FILE"
+    fi
 fi
