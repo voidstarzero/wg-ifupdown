@@ -7,12 +7,18 @@ function runcmd {
 
 # Automatically adds the interface private key from a separate file.
 if [[ "$IFACE" == wg* ]]; then
-    # Use an interface-specific key if one exists, otherwise default to the
-    # system wireguard key.    
-    if [[ -d /etc/wireguard/"$IFACE" ]]; then
+    # If the interface block specifies a specific key, use that. Otherwise,
+    # search a standard interface-specific path, then a system wireguard
+    # default path.
+    if [[ "$IF_WG_PRIVATE_KEY" ]]; then
+        private_keyfile="$IF_WG_PRIVATE_KEY"
+    elif [[ -f /etc/wireguard/"$IFACE"/private.key ]]; then
         private_keyfile=/etc/wireguard/"$IFACE"/private.key
-    else
+    elif [[ -f /etc/wireguard/private.key ]]; then
         private_keyfile=/etc/wireguard/private.key
+    else
+        echo "Error: No private key specified." >&2
+        exit 1
     fi
 
     # Reject the key if it's accessible to anyone other than root.
