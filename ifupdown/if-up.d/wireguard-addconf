@@ -13,6 +13,14 @@ if [[ "$IFACE" == wg* ]]; then
         config_path=/etc/wireguard/"$IFACE".conf
     fi
 
+    # Refuse to load the config if it is writable by others.
+    config_mode=$(stat --format %A "$config_path")
+    if [[ $config_mode != ?????-??-? ]]; then
+        printf "Error: Config file '%s' is writable by others.\n" \
+            "$config_path" >&2
+        exit 1
+    fi
+
     # Refuse to load the config if it overrides the private key. For security
     # reasons, private keys should be separate and have mode 600.
     if fgrep -isq 'PrivateKey' "$config_path"; then
