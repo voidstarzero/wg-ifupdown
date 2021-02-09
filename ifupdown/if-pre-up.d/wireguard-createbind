@@ -5,11 +5,11 @@ function runcmd {
     "$@"
 }
 
-# The ifup(8) program doesn't know how to to create wireguard links using
-# ip(8), so we need to create it before anything is tried.
+# There's no convenient way to find out if an interface is supposed to be
+# wireguard, other than how it's named.
 if [[ "$IFACE" == wg* ]]; then
-    # There's no convenient way to find out if an interface is supposed to be
-    # wireguard, other than how it's named.
+    # The ifup(8) program doesn't know how to to create wireguard links using
+    # ip(8), so we need to create it before anything is tried.
     runcmd ip link add "$IFACE" type wireguard
 
     # If we know what host port we're listening on already, bind to it now
