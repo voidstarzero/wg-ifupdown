@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function runcmd {
-    [[ $VERBOSITY == 1 ]] && echo "$@"
+    [[ $VERBOSITY == 1 ]] && echo "$@" >&2
     "$@"
 }
 
