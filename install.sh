@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# Remove old ifupdown wireguard scripts.
-pushd /etc/network
-find -path './if-*' -name 'wireguard-*' -exec rm {} +
-popd
+# Adjust for your system if necessary.
+netdir=/etc/network
 
-# Install ifupdown scripts to their proper locations.
-pushd ifupdown
-cp -R * /etc/network/
-popd
+cd ifupdown
+workdir=$(pwd)
+
+ln -sf $workdir/if-pre-up.sh $netdir/if-pre-up.d/wireguard
+ln -sf $workdir/if-up.sh $netdir/if-up.d/wireguard
+ln -sf $workdir/if-post-down.sh $netdir/if-post-down.d/wireguard
