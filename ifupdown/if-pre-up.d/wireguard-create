@@ -11,4 +11,9 @@ if [[ "$IFACE" == wg* ]]; then
     # There's no convenient way to find out if an interface is supposed to be
     # wireguard, other than how it's named.
     runcmd ip link add "$IFACE" type wireguard
+
+    # If we know what host port we're listening on already, bind to it now
+    if [[ "$IF_WG_LISTEN_PORT" ]]; then
+        runcmd wg set "$IFACE" listen-port "$IF_WG_LISTEN_PORT"
+    fi
 fi

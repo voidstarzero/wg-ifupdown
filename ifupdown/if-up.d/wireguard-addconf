@@ -13,5 +13,5 @@ if [[ "$IFACE" == wg* ]]; then
         config_path=/etc/wireguard/"$IFACE".conf
     fi
 
-    runcmd wg setconf "$IFACE" "$config_path"
+    runcmd wg addconf "$IFACE" "$config_path"
 fi
