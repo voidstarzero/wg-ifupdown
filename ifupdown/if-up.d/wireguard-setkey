@@ -15,5 +15,13 @@ if [[ "$IFACE" == wg* ]]; then
         private_keyfile=/etc/wireguard/private.key
     fi
 
+    # Reject the key if it's accessible to anyone other than root.
+    keyfile_mode=$(stat --format %a "$private_keyfile")
+    if [[ $keyfile_mode != ?00 ]]; then
+        printf "Error: private key '%s' mode %s, should be 600\n" \
+            "$private_keyfile" $keyfile_mode >&2
+        exit 1
+    fi
+
     runcmd wg set "$IFACE" private-key "$private_keyfile"
 fi
