@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+function runcmd {
+    [[ $VERBOSITY == 1 ]] && echo "$@"
+    "$@"
+}
+
+# Automatically adds the interface private key from a separate file.
+if [[ "$IFACE" == wg* ]]; then
+    # Use an interface-specific key if one exists, otherwise default to the
+    # system wireguard key.    
+    if [[ -d /etc/wireguard/"$IFACE" ]]; then
+        private_keyfile=/etc/wireguard/"$IFACE"/private.key
+    else
+        private_keyfile=/etc/wireguard/private.key
+    fi
+
+    runcmd wg set "$IFACE" private-key "$private_keyfile"
+fi

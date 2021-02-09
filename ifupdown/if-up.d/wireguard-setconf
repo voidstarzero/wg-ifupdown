@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+function runcmd {
+    [[ $VERBOSITY == 1 ]] && echo "$@"
+    "$@"
+}
+
+# Apply any matching wireguard configs found.
+if [[ "$IFACE" == wg* ]]; then
+    if [[ -d /etc/wireguard/"$IFACE" ]]; then
+        config_path=/etc/wireguard/"$IFACE"/config
+    else
+        config_path=/etc/wireguard/"$IFACE".conf
+    fi
+
+    runcmd wg setconf "$IFACE" "$config_path"
+fi

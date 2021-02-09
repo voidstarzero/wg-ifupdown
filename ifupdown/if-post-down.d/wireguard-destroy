@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+function runcmd {
+    [[ $VERBOSITY == 1 ]] && echo "$@"
+    "$@"
+}
+
+# Destroy the interface after all deconfiguration.
+if [[ "$IFACE" == wg* ]]; then
+    runcmd ip link del "$IFACE"
+fi
