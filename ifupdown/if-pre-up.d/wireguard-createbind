@@ -16,4 +16,9 @@ if [[ "$IFACE" == wg* ]]; then
     if [[ "$IF_WG_LISTEN_PORT" ]]; then
         runcmd wg set "$IFACE" listen-port "$IF_WG_LISTEN_PORT"
     fi
+
+    # Apply a firmware mark if required
+    if [[ "$IF_WG_FWMARK" ]]; then
+        runcmd wg set "$IFACE" fwmark "$IF_WG_FWMARK"
+    fi
 fi
