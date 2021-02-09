@@ -13,5 +13,12 @@ if [[ "$IFACE" == wg* ]]; then
         config_path=/etc/wireguard/"$IFACE".conf
     fi
 
+    # Refuse to load the config if it overrides the private key. For security
+    # reasons, private keys should be separate and have mode 600.
+    if fgrep -isq 'PrivateKey' "$config_path"; then
+        echo "Error: Specifying private key in config file is unsupported." >&2
+        exit 1
+    fi
+
     runcmd wg addconf "$IFACE" "$config_path"
 fi
