@@ -31,10 +31,9 @@ plugin directories contained within `/etc/network`. For example, the script
 named `if-pre-up.sh` needs to end up in the directory
 `/etc/network/if-pre-up.d`.
 
-The default `install.sh` does this by creating symlinks straight from the
-repository. You probably want the repo checked out by root, or copied by root
-somewhere else first. You can also copy the scripts manually to their proper
-locations.
+The default `install.sh` does this by copying the files straight from the
+repositories to their usual destination. You may want to customize this to fit
+your installation, or to symlink them from the repository instead.
 
 If you opt for a manual install, I recommend naming the copies something else
 that reflects their origin. A file named `if-pre-up.sh` in `if-pre-up.d` tells
